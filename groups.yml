@@ -1,0 +1,8 @@
+groups:
+  devops:
+  - "aos.dockerapp:1.1.7"
+  - "devops:1.1.7.1"
+  - image: "intellij:1.1.7.1"
+  testing:
+  - "octane"
+  - image: "sonarqube:7.7"
