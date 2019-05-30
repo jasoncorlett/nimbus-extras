@@ -18,7 +18,7 @@ my $config = LoadFile($configFile);
 my $command = shift @ARGV;
 
 die "'groups' element required in configuration.\n" unless defined $config->{groups};
-run_command($command, $config->{groups}{$_}) for map { die "No such group: $_" unless $config->{groups}{$_}; $_ } @ARGV;
+run_command($command, $config->{groups}{$_}) for map { die "No such group: $_.\n" unless $config->{groups}{$_}; $_ } @ARGV;
 
 sub run_command {
   my $cmd = shift; # Name of command (string)
@@ -43,6 +43,6 @@ sub normalize_image_name {
     : (defined($config->{defaults}) && defined($config->{defaults}{namespace})) ? $config->{defaults}{namespace}
     : undef;
 
-  return (($ns) ? $ns . '/' : '') . $2 . '.dockerapp:' . $3
+  return (($ns) ? $ns . '/' : '') . $2 . '.dockerapp' . (($3) ? ':' . $3 : '')
 }
 
