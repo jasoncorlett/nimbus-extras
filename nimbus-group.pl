@@ -18,6 +18,7 @@ my $config = LoadFile($configFile);
 my $command = shift @ARGV;
 
 die "'groups' element required in configuration.\n" unless defined $config->{groups};
+die "No images have been specified.\n" unless @ARGV;
 run_command($command, $config->{groups}{$_}) for map { die "No such group: $_.\n" unless $config->{groups}{$_}; $_ } @ARGV;
 
 sub run_command {
@@ -26,9 +27,28 @@ sub run_command {
 
   for my $image ( @{ $grp } ) {
     my $img = normalize_image_name($image);
-    printf "Running: %s on %s\n", $command, $img;
-    system($nimbusExe, $img, $command);
+    my @args = process_args($image);
+
+    printf "Running: %s on %s\n", $cmd, $img;
+    my @run = ( $nimbusExe, $img, @args, $cmd );
+    # print $_, "\n" for @run;
+    system(@run);
   }
+}
+
+sub process_args {
+    my $img = shift;
+    return () unless ref $img eq 'HASH';
+
+    if (defined $img->{set}) {
+        if (ref $img->{set} eq 'HASH') {
+            return map { ('-s', "$_=$img->{set}{$_}") } keys %{$img->{set}};
+        } elsif (ref $img->{set} eq 'ARRAY') {
+            return map { ('-s', $_) } @{$img->{set}}
+        } else {
+            return ( '-s', $img->{set} )
+        }
+    }
 }
 
 sub normalize_image_name {

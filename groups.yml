@@ -1,8 +1,21 @@
 groups:
-  devops:
-  - "aos.dockerapp:1.1.7"
-  - "devops:1.1.7.1"
-  - image: "intellij:1.1.7.1"
-  testing:
-  - "octane"
-  - image: "sonarqube:7.7"
+  mfconnect:
+  - mfconnect
+  mfconnect-all:
+  - octane
+  - jira
+  - mfconnect
+  - autopass
+  test-set-string:
+  - image: jasoncorlett/nimbusapp-test:0.1.0
+    set: MESSAGE=TEST SET WITH STRING
+  test-set-hash:
+  - image: jasoncorlett/nimbusapp-test:0.1.0
+    set:
+      MESSAGE: TEST SET WITH HASH
+      PORT: 22200
+  test-set-array:
+  - image: jasoncorlett/nimbusapp-test:0.1.0
+    set:
+    - MESSAGE=TEST SET WITH ARRAY
+    - PORT=33300
