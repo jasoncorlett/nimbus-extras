@@ -1,0 +1,13 @@
+# Metadata
+name: main
+---
+version: 3.7
+
+services:
+  base:
+    container_name: main_service
+    environment:
+      - "LEVEL=${LEVEL}"
+
+---
+LEVEL: 1

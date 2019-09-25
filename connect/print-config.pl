@@ -36,3 +36,4 @@ while (my ($syncName, $sync) = each $dom->{Synchronizations}->{Synchronization}-
 
     printf "\n";
 }
+

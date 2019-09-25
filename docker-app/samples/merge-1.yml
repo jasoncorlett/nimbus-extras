@@ -1,0 +1,16 @@
+# Metadata
+name: main_with_addon
+---
+version: 3.7
+
+services:
+  addon:
+    container_name: addon
+    environment:
+      LEVEL: ${LEVEL}
+  base:
+    environment:
+      - ADDON_SERVICE=ENABLED
+      - REQUIRE_SSL
+---
+LEVEL: 2
