@@ -1,21 +1,25 @@
 #!/usr/bin/env perl
 use 5.030;
 use YAML::XS qw(LoadFile Dump);
+use Getopt::Long;
 
-# Note: Compose file contains version, services, networks, volumes
-#  ** Is the order important? **
+my %overrideParams = ();
+
+GetOptions(
+    'set|s=s' => \%overrideParams
+);
 
 my $variable_match = qr/( \$\{ (\w+) \} )/x;
 
 my (undef, $compose, $rawParams) = LoadFile(shift // usage(1));
-say Dump walk($compose, process_params($rawParams));
+print Dump walk($compose, process_params($rawParams, \%overrideParams));
 
 sub walk {
     my $node = shift;
     my $params = shift;
 
     ref($node) eq 'ARRAY' and
-        return map { walk($_, $params) } $node->@*;
+        return [ map { walk($_, $params) } $node->@* ];
 
     ref($node) eq 'HASH' and 
         return { map { $_ => walk($node->{$_}, $params) } keys $node->%* };
@@ -25,6 +29,11 @@ sub walk {
 
 sub process_params {
     my $params = shift;
+    my $override = shift;
+
+    while (my ($k, $v) = each $override->%*) {
+        $params->{$k} = $v;
+    }
 
     my $cont = 1;
     my $loop = 10;
